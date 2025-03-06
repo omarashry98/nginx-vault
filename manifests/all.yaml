@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-vault-demo
+  annotations:
+    avp.kubernetes.io/path: "secret/data/nginx"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-vault-demo
+  template:
+    metadata:
+      labels:
+        app: nginx-vault-demo
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  annotations:
+    avp.kubernetes.io/path: "secret/data/nginx"
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Vault Secret Demo</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 40px;
+          line-height: 1.6;
+        }
+        .secret-box {
+          background-color: #f0f0f0;
+          border: 1px solid #ddd;
+          padding: 20px;
+          border-radius: 5px;
+          margin-top: 20px;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Argo CD Vault Plugin Demo</h1>
+      <p>This secret was injected by the Argo CD Vault Plugin:</p>
+      <div class="secret-box">
+        <h3>Secret Value:</h3>
+        <p><strong><path:MESSAGE></strong></p>
+      </div>
+    </body>
+    </html>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-vault-demo
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: nginx-vault-demo
+  type: ClusterIP
