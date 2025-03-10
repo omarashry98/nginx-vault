@@ -1,30 +1,30 @@
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: my-nginx
-# data:
-#   nginx.conf: |
-#     events {}
-#     env MY_SECRET;
-#     http {
-#         server {
-#             listen 8080;
-#             location / {
-#                 set_by_lua \$my_secret 'return os.getenv("MY_SECRET")';
-#                 return 200 \$my_secret;
-#             }
-#         }
-#     }
-# ---
-# apiVersion: v1
-# kind: Secret
-# metadata:
-#   name: my-nginx
-#   annotations:
-#     avp.kubernetes.io/path: "secret/data/nginx"
-# stringData:
-#   MY_SECRET: <password>
-# ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-nginx
+data:
+  nginx.conf: |
+    events {}
+    env MY_SECRET;
+    http {
+        server {
+            listen 8080;
+            location / {
+                set_by_lua \$my_secret 'return os.getenv("MY_SECRET")';
+                return 200 \$my_secret;
+            }
+        }
+    }
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-nginx
+  annotations:
+    avp.kubernetes.io/path: "secret/data/nginx"
+stringData:
+  MY_SECRET: <password>
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,9 +44,9 @@ spec:
         image: nginx:stable
         ports:
         - containerPort: 8080
-        # envFrom:
-        # - secretRef:
-        #     name: my-nginx
+        envFrom:
+        - secretRef:
+            name: my-nginx
         volumeMounts:
         - name: nginx-config
           mountPath: /usr/share/nginx/html
