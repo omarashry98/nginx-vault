@@ -16,7 +16,7 @@ spec:
       - name: nginx
         image: openresty/openresty:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 5000
         envFrom:
         - secretRef:
             name: test-secret
@@ -63,8 +63,8 @@ spec:
   selector:
     app: nginx-vault-demo
   ports:
-  - port: 8080
-    targetPort: 8080
+  - port: 5000
+    targetPort: 5000
     protocol: TCP
 
 
