@@ -36,14 +36,13 @@ metadata:
 data:
   nginx.conf: |
     events {}
-    
+    env MY_SECRET;
     http {
         server {
             listen 8080;
-            
             location / {
-                default_type text/plain;
-                return 200 $ENV{"MY_SECRET"};
+                set_by_lua \$my_secret 'return os.getenv("MY_SECRET")';
+                return 200 \$my_secret;
             }
         }
     }
