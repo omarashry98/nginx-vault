@@ -22,7 +22,7 @@ spec:
             name: test-secret
         volumeMounts:
         - name: nginx-config
-          mountPath: /etc/nginx/nginx.conf
+          mountPath: /etc/nginx/
           subPath: nginx.conf
       volumes:
       - name: nginx-config
@@ -41,8 +41,9 @@ data:
         server {
             listen 8080;
             location / {
-                set_by_lua \$my_secret 'return os.getenv("MY_SECRET")';
-                return 200 \$my_secret;
+                content_by_lua_block {
+                    ngx.say(os.getenv("MY_SECRET"))
+                }
             }
         }
     }
@@ -62,7 +63,9 @@ spec:
   selector:
     app: nginx-vault-demo
   ports:
-  - port: 80
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
 
 
 
