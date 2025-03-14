@@ -43,12 +43,20 @@ data:
     events {}
     
     http {
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+        
         server {
             listen 8080;
             
             location / {
                 root /usr/share/nginx/html;
                 index index.html;
+            }
+            
+            location /secret {
+                add_header Content-Type text/plain;
+                return 200 $ENV{"MY_SECRET"};
             }
         }
     }
@@ -86,14 +94,16 @@ data:
         <h1>Vault Secret Display</h1>
         <div class="secret-box">
             <h2>Secret Value:</h2>
-            <p id="secret-value"></p>
+            <p id="secret-value">Loading secret...</p>
         </div>
         <script>
-            // Get secret from environment variable passed during rendering
             fetch('/secret')
                 .then(response => response.text())
                 .then(data => {
                     document.getElementById('secret-value').innerText = data;
+                })
+                .catch(error => {
+                    document.getElementById('secret-value').innerText = "Error: " + error;
                 });
         </script>
     </body>
