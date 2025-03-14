@@ -22,7 +22,7 @@ spec:
             name: test-secret
         volumeMounts:
         - name: nginx-config
-          mountPath: /etc/nginx/nginx.conf
+          mountPath: /usr/local/openresty/nginx/conf/nginx.conf
           subPath: nginx.conf
       volumes:
       - name: nginx-config
@@ -88,23 +88,6 @@ spec:
 #       - name: nginx
 #         image: openresty/openresty:1.19.9.1-0-alpine
 #         ports:# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: my-nginx
-# data:
-#   nginx.conf: |
-#     events {}
-    
-#     http {
-#         server {
-#             listen 8080;
-            
-#             location / {
-#                 default_type text/plain;
-#                 return 200 $ENV{"MY_SECRET"};
-#             }
-#         }
-#     }
 #         - containerPort: 8080
 #         envFrom:
 #         - secretRef:
