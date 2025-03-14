@@ -63,9 +63,7 @@ spec:
   selector:
     app: nginx-vault-demo
   ports:
-  - port: 5000
-    targetPort: 5000
-    protocol: TCP
+  - port: 80
 
 
 
