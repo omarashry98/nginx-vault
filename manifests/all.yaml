@@ -41,13 +41,15 @@ data:
         server {
             listen 80;
             location / {
+                default_type text/html;
                 content_by_lua_block {
-                    ngx.say("<html><body><h1 style='font-size:50px; text-align:center;'>" .. os.getenv("MY_SECRET") .. "</h1></body></html>")
+                    local secret = os.getenv("MY_SECRET") or "No Secret Found"
+                    ngx.say("<html><body><h1 style='font-size:50px; text-align:center;'>" .. secret .. "</h1></body></html>")
                 }
-                ngx.header.content_type = "text/html"
             }
         }
     }
+
 
 ---
 apiVersion: v1
