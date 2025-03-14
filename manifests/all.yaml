@@ -15,6 +15,19 @@ spec:
       containers:
         - name: openresty
           image: openresty/openresty:latest
+          ports:
+          - containerPort: 8080
+          envFrom:
+          - secretRef:
+              name: my-nginx
+          volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: my-nginx
           volumeMounts:
             - name: config-volume
               mountPath: /etc/nginx/nginx.conf
@@ -81,24 +94,7 @@ spec:
 #       containers:
 #       - name: nginx
 #         image: openresty/openresty:1.19.9.1-0-alpine
-#         ports:# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: my-nginx
-# data:
-#   nginx.conf: |
-#     events {}
-    
-#     http {
-#         server {
-#             listen 8080;
-            
-#             location / {
-#                 default_type text/plain;
-#                 return 200 $ENV{"MY_SECRET"};
-#             }
-#         }
-#     }
+#         ports:
 #         - containerPort: 8080
 #         envFrom:
 #         - secretRef:
