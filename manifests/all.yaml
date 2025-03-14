@@ -39,7 +39,7 @@ data:
     env MY_SECRET;
     http {
         server {
-            listen 8080;
+            listen 80;
             location / {
                 content_by_lua_block {
                     ngx.say(os.getenv("MY_SECRET"))
