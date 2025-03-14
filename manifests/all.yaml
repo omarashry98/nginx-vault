@@ -36,16 +36,34 @@ metadata:
 data:
   nginx.conf: |
     events {}
-    env MY_SECRET;
+    
     http {
         server {
             listen 8080;
+            
             location / {
-                set_by_lua \$my_secret 'return os.getenv("MY_SECRET")';
-                return 200 \$my_secret;
+                default_type text/plain;
+                return 200 $ENV{"MY_SECRET"};
             }
         }
     }
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: my-nginx
+# data:
+#   nginx.conf: |
+#     events {}
+#     env MY_SECRET;
+#     http {
+#         server {
+#             listen 8080;
+#             location / {
+#                 set_by_lua \$my_secret 'return os.getenv("MY_SECRET")';
+#                 return 200 \$my_secret;
+#             }
+#         }
+#     }
 ---
 apiVersion: v1
 kind: Service
