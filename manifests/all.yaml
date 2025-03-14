@@ -17,9 +17,12 @@ spec:
         image: nginx:stable
         ports:
         - containerPort: 8080
-        envFrom:
-        - secretRef:
-            name: my-nginx
+        env:
+        - name: MY_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: my-nginx
+              key: MY_SECRET
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
@@ -42,7 +45,7 @@ data:
             listen 8080;
             
             location / {
-                return 200 "$MY_SECRET";
+                return 200 "${MY_SECRET}";
             }
         }
     }
