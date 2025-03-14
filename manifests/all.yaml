@@ -118,4 +118,4 @@ metadata:
   annotations:
     avp.kubernetes.io/path: "secret/data/nginx"
 stringData:
-  MY_SECRET: <vault:password>
+  MY_SECRET: <password>
