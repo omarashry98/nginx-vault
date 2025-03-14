@@ -22,29 +22,94 @@ spec:
             name: my-nginx
         volumeMounts:
         - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: nginx-html
           mountPath: /usr/share/nginx/html
       volumes:
       - name: nginx-config
         configMap:
-          name: my-nginx
+          name: my-nginx-config
+      - name: nginx-html
+        configMap:
+          name: my-nginx-html
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: my-nginx
+  name: my-nginx-config
 data:
   nginx.conf: |
     events {}
-    env MY_SECRET;
+    
     http {
         server {
             listen 8080;
+            
             location / {
-                set_by_lua \$my_secret 'return os.getenv("MY_SECRET")';
-                return 200 \$my_secret;
+                root /usr/share/nginx/html;
+                index index.html;
             }
         }
     }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-nginx-html
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Vault Secret Display</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 40px;
+                line-height: 1.6;
+                color: #333;
+            }
+            .secret-box {
+                background-color: #f4f4f4;
+                border-left: 4px solid #5c6bc0;
+                padding: 15px;
+                margin: 20px 0;
+                border-radius: 0 4px 4px 0;
+            }
+            h1 {
+                color: #3f51b5;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Vault Secret Display</h1>
+        <div class="secret-box">
+            <h2>Secret Value:</h2>
+            <p id="secret-value"></p>
+        </div>
+        <script>
+            // Get secret from environment variable passed during rendering
+            fetch('/secret')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('secret-value').innerText = data;
+                });
+        </script>
+    </body>
+    </html>
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-vault-demo
+spec:
+  selector:
+    app: nginx-vault-demo
+  ports:
+  - port: 80
+    targetPort: 8080
+  type: ClusterIP
 ---
 apiVersion: v1
 kind: Secret
@@ -53,6 +118,4 @@ metadata:
   annotations:
     avp.kubernetes.io/path: "secret/data/nginx"
 stringData:
-  MY_SECRET: <password>
-
-
+  MY_SECRET: <vault:password>
