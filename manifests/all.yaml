@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:stable
+        image: openresty/openresty:1.19.9.1-0-alpine
         command: ["nginx", "-g", "daemon off;"]
         ports:
         - containerPort: 8080
