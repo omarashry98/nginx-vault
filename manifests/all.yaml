@@ -14,9 +14,8 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: openresty/openresty:1.19.9.1-0-alpine
-        command: ["nginx"]
-        args: ["-g", "daemon off;"]
+        image: nginx:stable
+        command: ["nginx", "-g", "daemon off;"]
         ports:
         - containerPort: 8080
         env:
@@ -41,12 +40,11 @@ metadata:
 data:
   nginx.conf: |
     events {}
-    env MY_SECRET;
     http {
         server {
             listen 8080;
             location / {
-                return 200 "${MY_SECRET}";
+                return 200 "hello-world";
             }
         }
     }
@@ -57,6 +55,16 @@ metadata:
   name: my-nginx
 stringData:
   MY_SECRET: "test-secret-value"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-vault-demo
+spec:
+  selector:
+    app: nginx-vault-demo
+  ports:
+  - port: 80
 
 
 
