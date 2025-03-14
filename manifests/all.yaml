@@ -19,7 +19,7 @@ spec:
         - containerPort: 8080
         envFrom:
         - secretRef:
-            name: my-nginx
+            name: test-secret
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
@@ -50,7 +50,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: my-nginx
+  name: test-secret
 stringData:
   MY_SECRET: "test-secret-value"
 ---
