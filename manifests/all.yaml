@@ -15,6 +15,8 @@ spec:
       containers:
       - name: nginx
         image: nginx:stable
+        command: ["nginx"]
+        args: ["-g", "daemon off;"]
         ports:
         - containerPort: 8080
         envFrom:
@@ -28,9 +30,6 @@ spec:
       - name: nginx-config
         configMap:
           name: my-nginx
-      - name: my-secret
-        secret:
-          secretName: my-nginx
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -69,4 +68,4 @@ metadata:
   annotations:
     avp.kubernetes.io/path: "secret/data/nginx"
 stringData:
-  MY_SECRET: <password>
+  MY_SECRET: "<password>"
