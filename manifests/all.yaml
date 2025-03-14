@@ -15,6 +15,8 @@ spec:
       containers:
       - name: nginx
         image: nginx:stable
+        command: ["nginx"]
+        args: ["-g", "daemon off;"]
         ports:
         - containerPort: 8080
         env:
@@ -39,14 +41,22 @@ metadata:
 data:
   nginx.conf: |
     events {}
+    env MY_SECRET;
     http {
         server {
             listen 8080;
             location / {
-                return 200 "hello-world";
+                return 200 "${MY_SECRET}";
             }
         }
     }
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-nginx
+stringData:
+  MY_SECRET: "test-secret-value"
 ---
 apiVersion: v1
 kind: Service
@@ -59,10 +69,3 @@ spec:
   - port: 80
     targetPort: 8080
   type: ClusterIP
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: my-nginx
-stringData:
-  MY_SECRET: "test-secret-value"
