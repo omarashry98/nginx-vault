@@ -14,16 +14,12 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: openresty/openresty:1.19.9.1-0-alpine
-        command: ["nginx", "-g", "daemon off;"]
+        image: nginx:stable
         ports:
         - containerPort: 8080
-        env:
-        - name: MY_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: my-nginx
-              key: MY_SECRET
+        envFrom:
+        - secretRef:
+            name: my-nginx
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
