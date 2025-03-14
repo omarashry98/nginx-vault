@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:stable
+        image: openresty/openresty:latest
         ports:
         - containerPort: 8080
         envFrom:
