@@ -39,13 +39,11 @@ metadata:
 data:
   nginx.conf: |
     events {}
-    env MY_SECRET;
     http {
         server {
             listen 8080;
-            
             location / {
-                return 200 "${MY_SECRET}";
+                return 200 "hello-world";
             }
         }
     }
