@@ -42,8 +42,7 @@ data:
             listen 8080;
             
             location / {
-                return 200 \$my_secret 'return os.getenv("MY_SECRET")';
-                # return 200 \$my_secret;
+                return 200 "$MY_SECRET";
             }
         }
     }
