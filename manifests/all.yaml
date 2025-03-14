@@ -51,9 +51,11 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: test-secret
+  name: my-nginx
+  annotations:
+    avp.kubernetes.io/path: "secret/data/nginx"
 stringData:
-  MY_SECRET: "test-secret-value"
+  MY_SECRET: <password>
 ---
 apiVersion: v1
 kind: Service
