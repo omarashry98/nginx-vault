@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: openresty
+  name: nginx-vault-demo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: openresty
+      app: nginx-vault-demo
   template:
     metadata:
       labels:
-        app: openresty
+        app: nginx-vault-demo
     spec:
       containers:
-        - name: openresty
+        - name: nginx-vault-demo
           image: openresty/openresty:latest
           ports:
           - containerPort: 8080
