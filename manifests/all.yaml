@@ -15,8 +15,6 @@ spec:
       containers:
       - name: nginx
         image: nginx:stable
-        command: ["nginx"]
-        args: ["-g", "daemon off;"]
         ports:
         - containerPort: 8080
         env:
@@ -29,24 +27,30 @@ spec:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "envsubst '$MY_SECRET' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf"]
       volumes:
       - name: nginx-config
         configMap:
           name: my-nginx
+          items:
+          - key: nginx.conf.template
+            path: nginx.conf
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: my-nginx
 data:
-  nginx.conf: |
+  nginx.conf.template: |  # Rename to .template
     events {}
-    env MY_SECRET;
     http {
         server {
             listen 8080;
             location / {
-                return 200 "${MY_SECRET}";
+                return 200 "$MY_SECRET";
             }
         }
     }
