@@ -57,18 +57,7 @@ metadata:
   name: my-nginx
 stringData:
   MY_SECRET: "test-secret-value"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-vault-demo
-spec:
-  selector:
-    app: nginx-vault-demo
-  ports:
-  - port: 80
-    targetPort: 8080
-  type: ClusterIP
+
 
 
 
