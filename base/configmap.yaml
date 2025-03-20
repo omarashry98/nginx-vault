@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-nginx
+data:
+  nginx.conf: |
+    events {}
+    env MY_SECRET;
+    http {
+        server {
+            listen 80;
+            location / {
+                default_type text/html;
+                content_by_lua_block {
+                    local secret = os.getenv("MY_SECRET") or "No Secret Found"
+                    ngx.say("<html><body><h1 style='font-size:50px; text-align:center;'>" .. secret .. "</h1></body></html>")
+                }
+            }
+        }
+    }
